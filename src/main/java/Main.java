@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Random;
 
 /**
  * Created by WellDone2044 on 17/09/15.
@@ -22,7 +21,7 @@ public class Main {
 
         DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
 
-        TSP_algorithm solver = new TSP_NearestNeighborHeuristic(fileParser.getDimension(), distanceMatrix);
+        TSP_algorithm solver = new TSP_NearestInsertionHeuristic(fileParser.getDimension(), distanceMatrix);
 
         int[] solution = solver.solve();
 
