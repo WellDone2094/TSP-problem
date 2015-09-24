@@ -12,6 +12,7 @@ public class DistanceMatrix {
             matrix[i][i] = 0;
             for(int j=i+1; j<arr.size(); j++){
                 matrix[i][j] = pointDistance(arr.get(i), arr.get(j));
+                matrix[j][i] = pointDistance(arr.get(i), arr.get(j));
             }
         }
     }
