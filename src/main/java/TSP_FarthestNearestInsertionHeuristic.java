@@ -5,14 +5,16 @@ import java.util.Random;
 /**
  * Created by WellDone2044 on 24/09/15.
  */
-public class TSP_NearestInsertionHeuristic implements TSP_algorithm{
+public class TSP_FarthestNearestInsertionHeuristic implements TSP_algorithm{
 
     private int nodes_number;
     private DistanceMatrix dm;
+    private boolean type;
 
-    public TSP_NearestInsertionHeuristic(int nodes_number, DistanceMatrix distanceMatrix){
+    public TSP_FarthestNearestInsertionHeuristic(int nodes_number, DistanceMatrix distanceMatrix, boolean type){
         this.nodes_number = nodes_number;
         this.dm = distanceMatrix;
+        this.type = type;
     }
 
     @Override
@@ -37,9 +39,17 @@ public class TSP_NearestInsertionHeuristic implements TSP_algorithm{
             int selected = i;
             for(int j=i+1; j<nodes_number; j++){
 
-                //farthest
-                if(dist[j] > dist[selected]){
-                    selected = j;
+                if(type) {
+                    //Nearest
+                    if (dist[j] < dist[selected]) {
+                        selected = j;
+                    }
+
+                }else{
+                    //farthest
+                    if (dist[j] > dist[selected]) {
+                        selected = j;
+                    }
                 }
             }
 
@@ -55,7 +65,7 @@ public class TSP_NearestInsertionHeuristic implements TSP_algorithm{
                 int bst_dist2 = dm.getDistance(best_pos.getNext().getValue(), nodes[selected]);
                 int bst_value = bst_dist1 + bst_dist2 - dm.getDistance(best_pos.getValue(), best_pos.getNext().getValue());
 
-                if(current_value > bst_value){
+                if(current_value < bst_value){
                     best_pos = current_node;
                 }
                 current_node = current_node.getNext();
