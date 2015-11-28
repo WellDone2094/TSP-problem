@@ -4,7 +4,9 @@ import java.util.ArrayList;
  * Created by WellDone2044 on 17/09/15.
  */
 public class DistanceMatrix {
+
     private int matrix[][];
+
     public DistanceMatrix(ArrayList<Point> arr){
         this.matrix = new int[arr.size()][arr.size()];
 
