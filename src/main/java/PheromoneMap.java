@@ -9,7 +9,7 @@ public class PheromoneMap {
     private double p;
     private double alpha;
 
-    void PheromoneMap(int nodes_number, double initValue, double p, double alpha) {
+    public  PheromoneMap(int nodes_number, double initValue, double p, double alpha) {
 
         this.nodes_number = nodes_number;
         this.initValue = initValue;
@@ -28,12 +28,34 @@ public class PheromoneMap {
         matrix[b][a] = matrix[a][b];
     }
 
-    void updatePath(int[] path, double length){
-        for (int i = 0; i < path.length; i++) {
-            int a = path[i];
-            int b = path[(i+1)%path.length)];
-            matrix[a][b] = (1-alpha)*matrix[a][b]+alpha/length;
+    void updatePath(LinkedListNode node, double length, boolean reverse){
+        LinkedListNode currentNode = node;
+
+        if(reverse){
+            while(node.getPreview() != null) {
+                int a = currentNode.getValue();
+                currentNode = currentNode.getPreview();
+                int b = currentNode.getValue();
+                matrix[a][b] = (1 - alpha) * matrix[a][b] + alpha / length;
+                matrix[b][a] = matrix[a][b];
+            }
+            int a = currentNode.getValue();
+            int b = node.getValue();
+            matrix[a][b] = (1 - alpha) * matrix[a][b] + alpha / length;
             matrix[b][a] = matrix[a][b];
+        }else{
+            while(node.getNext() != null) {
+                int a = currentNode.getValue();
+                currentNode = currentNode.getNext();
+                int b = currentNode.getValue();
+                matrix[a][b] = (1 - alpha) * matrix[a][b] + alpha / length;
+                matrix[b][a] = matrix[a][b];
+            }
+            int a = currentNode.getValue();
+            int b = node.getValue();
+            matrix[a][b] = (1 - alpha) * matrix[a][b] + alpha / length;
+            matrix[b][a] = matrix[a][b];
+
         }
     }
 
