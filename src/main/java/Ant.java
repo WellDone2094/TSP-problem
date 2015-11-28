@@ -51,7 +51,7 @@ public class Ant {
         // sum all the value for each possible next edge
         while(node != null)){
             double dist = distanceMatrix.getDistance(currentPath.getValue(), node.getValue());
-            double pheromone = pheromoneMap.getPheromone(currentPath.getValue(), node.getValue());
+            double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), node.getValue()), beta);
             tot += pheromone/dist;
 
             if(best == null || distanceMatrix.getDistance(currentPath.getValue(), best.getValue()) > dist){
@@ -62,7 +62,7 @@ public class Ant {
 
         // remove best from total
         tot -= pheromoneMap.getPheromone(currentPath.getValue(), best.getValue()) /
-                distanceMatrix.getDistance(currentPath.getValue(), best.getValue());
+                Math.pow(distanceMatrix.getDistance(currentPath.getValue(), best.getValue()), beta);
 
         // if < q0 choose best otherwise choose between others
         if(random.nextFloat() < q0){
@@ -75,7 +75,7 @@ public class Ant {
             // loop until sum > select
             while(node != null) {
                 double dist = distanceMatrix.getDistance(currentPath.getValue(), node.getValue());
-                double pheromone = pheromoneMap.getPheromone(currentPath.getValue(), node.getValue());
+                double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), node.getValue()), beta);
                 sum += pheromone/dist;
                 if (sum > select) break;
             }
