@@ -20,7 +20,7 @@ public class Ant {
     private LinkedListNode currentPath;
     private LinkedListNode availableNodes;
 
-    void Ant(int nodes_number, DistanceMatrix distanceMatrix, PheromoneMap pheromoneMap, double q0, double beta, int initNode){
+    public Ant(int nodes_number, DistanceMatrix distanceMatrix, PheromoneMap pheromoneMap, double q0, double beta, int initNode){
         this.nodes_number = nodes_number;
         this.distanceMatrix = distanceMatrix;
         this.pheromoneMap = pheromoneMap;
@@ -92,6 +92,10 @@ public class Ant {
 
     public double getCurrentLength(){
         return currentLeght;
+    }
+
+    public LinkedListNode getPath(){
+        return currentPath;
     }
 
 }
