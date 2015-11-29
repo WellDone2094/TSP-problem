@@ -14,7 +14,7 @@ public class Ant {
     private PheromoneMap pheromoneMap;
     private int nodes_number;
     private double q0;
-    private double beta
+    private double beta;
     private double currentLeght;
     private int initNode;
     private LinkedListNode currentPath;
@@ -31,7 +31,7 @@ public class Ant {
         this.currentPath = new LinkedListNode(initNode, null);
         this.availableNodes = null;
         LinkedListNode lastNode = null;
-        for(int i=0; i<nodes_number; i++){
+        for(int i=nodes_number-1; i>=0; i--){
             if(i==initNode) continue;
             if(lastNode == null){
                 availableNodes = new LinkedListNode(i, null, null);
@@ -43,13 +43,12 @@ public class Ant {
         }
     }
 
-    void chooseNextNode(Random random){
+    void chooseNextNode(Random random, boolean debug, int[] prob){
         double tot = 0;
         LinkedListNode best = null;
         LinkedListNode node = availableNodes;
-
         // sum all the value for each possible next edge
-        while(node != null)){
+        while(node != null){
             double dist = distanceMatrix.getDistance(currentPath.getValue(), node.getValue());
             double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), node.getValue()), beta);
             tot += pheromone/dist;
@@ -60,9 +59,6 @@ public class Ant {
             node = node.getNext();
         }
 
-        // remove best from total
-        tot -= pheromoneMap.getPheromone(currentPath.getValue(), best.getValue()) /
-                Math.pow(distanceMatrix.getDistance(currentPath.getValue(), best.getValue()), beta);
 
         // if < q0 choose best otherwise choose between others
         if(random.nextFloat() < q0){
@@ -77,21 +73,42 @@ public class Ant {
                 double dist = distanceMatrix.getDistance(currentPath.getValue(), node.getValue());
                 double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), node.getValue()), beta);
                 sum += pheromone/dist;
-                if (sum > select) break;
+                if (sum >= select) break;
+                node = node.getNext();
             }
         }
+        if(debug) {
+//            System.out.println(node.getValue());
+            prob[node.getValue()]++;
+            return;
+        }
+
+
+        //update pheromone
+        pheromoneMap.updateConnection(currentPath.getValue(), node.getValue());
 
         //add node to current path;
         currentLeght += distanceMatrix.getDistance(currentPath.getValue(), node.getValue());
         currentPath.setNext(new LinkedListNode(node.getValue(), null, currentPath));
         currentPath = currentPath.getNext();
 
+
         // remove node from available
-        node.getPreview().setNext(node.getNext());
+        if(node.getPreview() != null) {
+            LinkedListNode prev = node.getPreview();
+            LinkedListNode next = node.getNext();
+            prev.setNext(next);
+            if(next!=null)
+                next.setPreview(prev);
+        }else {
+            availableNodes = availableNodes.getNext();
+            if(availableNodes!=null)
+                availableNodes.setPreview(null);
+        }
     }
 
     public double getCurrentLength(){
-        return currentLeght;
+        return currentLeght+distanceMatrix.getDistance(initNode, currentPath.getValue());
     }
 
     public LinkedListNode getPath(){

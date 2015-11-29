@@ -1,5 +1,7 @@
 import sun.awt.image.ImageWatched;
 
+import java.util.LinkedList;
+
 /**
  * Created by WellDone2044 on 24/09/15.
  */
@@ -17,7 +19,7 @@ public class LinkedListNode {
     public LinkedListNode(int value, LinkedListNode next, LinkedListNode preview) {
         this.value = value;
         this.next = next;
-        this.preview = preview
+        this.preview = preview;
 
     }
 
@@ -45,4 +47,16 @@ public class LinkedListNode {
     public void setValue(int value){
         this.value = value;
    }
+
+    public LinkedListNode getNext(LinkedListNode node){
+        if(node == next)
+            return preview;
+        return next;
+    }
+
+    public LinkedListNode getPreview(LinkedListNode node){
+        if(node == preview)
+            return next;
+        return preview;
+    }
 }

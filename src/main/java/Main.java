@@ -21,7 +21,8 @@ public class Main {
 
         DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
 
-        TSP_algorithm solver = new TSP_FarthestNearestInsertionHeuristic(fileParser.getDimension(), distanceMatrix, false);
+        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser);
+//        TSP_algorithm solver = new TSP_FarthestNearestInsertionHeuristic(fileParser.getDimension(), distanceMatrix, false);
 
         int[] solution = solver.solve();
 
