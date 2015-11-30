@@ -24,8 +24,8 @@ public class TSP_AntColony implements TSP_algorithm{
 
     int ants_number;
     double alpha = 0.1;                         // best path update
-    double beta = 2;                            // pheromon power
-    double q0 = 0.8;                            // follow pheromone
+    double beta = 1;                            // pheromon power
+    double q0 = 0.85;                            // follow pheromone
 
 
     boolean debug = true;
@@ -78,7 +78,7 @@ public class TSP_AntColony implements TSP_algorithm{
             if(absolute_best_cost == -1 || absolute_best_cost > best_cost){
                 absolute_best_cost = best_cost;
                 absolute_best_path = best_path;
-                System.out.println(k + " - " + absolute_best_cost + " - " + ((absolute_best_cost - file.getBestKnow()) / file.getBestKnow()));
+                System.out.println(k + " - " + absolute_best_cost + " - " + ((absolute_best_cost - file.getBestKnow()) / (double)file.getBestKnow()));
             }
 
             if(absolute_best_cost <= file.getBestKnow()){
@@ -89,7 +89,7 @@ public class TSP_AntColony implements TSP_algorithm{
             pheromoneMap.updatePath(absolute_best_path, absolute_best_cost);
 
             if(debug && k%1000 == 0) {
-                System.out.println(k+" - "+absolute_best_cost+" - "+((absolute_best_cost-file.getBestKnow())/file.getBestKnow()));
+                System.out.println(k+" - "+absolute_best_cost+" - "+((absolute_best_cost-file.getBestKnow())/(double)file.getBestKnow()));
             }
         }
 
