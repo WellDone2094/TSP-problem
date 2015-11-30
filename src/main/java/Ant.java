@@ -61,17 +61,18 @@ public class Ant {
         double tot = 0;
         double candidateTot = 0;
         LinkedListNode best = null;
+        double best_value = 0;
         LinkedListNode node = availableNodes;
         int[] candidate = distanceMatrix.getCandidateList()[currentPath.getValue()];
 
         // sum candidate
-        for (int i = 0; i < candidate.length; i++) {
-            if(!used[candidate[i]]) {
-                double dist = distanceMatrix.getDistance(currentPath.getValue(), candidate[i]);
-                double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), candidate[i]), beta);
-                candidateTot += pheromone / dist;
-            }
-        }
+//        for (int i = 0; i < candidate.length; i++) {
+//            if(!used[candidate[i]]) {
+//                double dist = distanceMatrix.getDistance(currentPath.getValue(), candidate[i]);
+//                double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), candidate[i]), beta);
+//                candidateTot += pheromone / dist;
+//            }
+//        }
 
         // sum all the value for each possible next edge
         while(node != null){
@@ -91,8 +92,9 @@ public class Ant {
             double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), node.getValue()), beta);
             tot += pheromone/dist;
 
-            if(best == null || distanceMatrix.getDistance(currentPath.getValue(), best.getValue()) > dist){
+            if(best == null || best_value > pheromone/dist){
                 best = node;
+                best_value = pheromone/dist;
             }
             node = node.getNext();
         }
