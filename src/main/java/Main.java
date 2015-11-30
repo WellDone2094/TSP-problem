@@ -16,7 +16,7 @@ public class Main {
             return;
         }
 
-        DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates(), 30);
+        DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates(), 40);
 
         TSP_algorithm nn = new TSP_NearestNeighborHeuristic(fileParser.getDimension(), distanceMatrix);
         int[] nn_sol = nn.solve();
