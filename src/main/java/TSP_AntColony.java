@@ -22,29 +22,30 @@ public class TSP_AntColony implements TSP_algorithm{
 
     private FileParser file;
 
-    int ants_number = 240;
+    int ants_number;
     double alpha = 0.1;                         // best path update
     double beta = 2;                            // pheromon power
-    double q0 = 0.85;                            // follow pheromone
+    double q0 = 0.8;                            // follow pheromone
 
 
     boolean debug = true;
 
-    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file){
+    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file, int nn_soltution){
         this.nodes_number = nodes_number;
         this.distanceMatrix = distanceMatrix;
-        this.t0 = 1.0/(nodes_number*50000);
+        this.t0 = 1.0/(nodes_number*nn_soltution);
         this.pheromoneMap = new PheromoneMap(this.nodes_number, t0, alpha);
         this.seed = System.currentTimeMillis();
         this.random = new Random(seed);
         this.file = file;
+        this.ants_number =(int)(0.7*nodes_number);
     }
 
     @Override
     public int[] solve() {
         int max = 10000;
         LinkedListNode absolute_best_path = null;
-        double absolute_best_cost = -1;
+        int absolute_best_cost = -1;
         for (int k = 0; k < max; k++) {
 
 
@@ -63,11 +64,11 @@ public class TSP_AntColony implements TSP_algorithm{
 
             //choose best ant
             LinkedListNode best_path = null;
-            double best_cost = -1;
+            int best_cost = -1;
             for (int i = 0; i < ants_number; i++) {
                 LinkedListNode path = ants.get(i).getPath();
                 twoOpt(path);
-                double len = calculateLength(path);
+                int len = calculateLength(path);
                 if(best_cost == -1 || best_cost > len) {
                     best_path = path;
                     best_cost = len;
@@ -80,7 +81,7 @@ public class TSP_AntColony implements TSP_algorithm{
                 System.out.println(k + " - " + absolute_best_cost + " - " + ((absolute_best_cost - file.getBestKnow()) / file.getBestKnow()));
             }
 
-            if(absolute_best_cost == file.getBestKnow()){
+            if(absolute_best_cost <= file.getBestKnow()){
                 System.out.println("Seed: "+seed);
                 break;
             }
@@ -112,8 +113,8 @@ public class TSP_AntColony implements TSP_algorithm{
 
     }
 
-    public double calculateLength(LinkedListNode path){
-        double tot = 0;
+    public int calculateLength(LinkedListNode path){
+        int tot = 0;
         LinkedListNode currentNode = path;
         LinkedListNode previousNode = currentNode.getPreview();
         LinkedListNode nextNode = currentNode.getNext();
@@ -138,8 +139,8 @@ public class TSP_AntColony implements TSP_algorithm{
     }
 
     public void twoOpt(LinkedListNode first){
-        double gain = 1;
-        double bestGain = 1;
+        int gain = 1;
+        int bestGain = 1;
 
         while(bestGain != 0){
             gain = 0;
@@ -153,10 +154,10 @@ public class TSP_AntColony implements TSP_algorithm{
                 n2 = n1.getNext(n1prev);
                 n2prev = n1;
                 do{
-                    double c1 = distanceMatrix.getDistance(n1.getValue(),n1.getNext(n1prev).getValue()) +
+                    int c1 = distanceMatrix.getDistance(n1.getValue(),n1.getNext(n1prev).getValue()) +
                             distanceMatrix.getDistance(n2.getValue(), n2.getNext(n2prev).getValue());
 
-                    double c2 = distanceMatrix.getDistance(n1.getValue(),n2.getValue()) +
+                    int c2 = distanceMatrix.getDistance(n1.getValue(),n2.getValue()) +
                             distanceMatrix.getDistance(n1.getNext(n1prev).getValue(), n2.getNext(n2prev).getValue());
 
                     gain = c1-c2;

@@ -27,7 +27,7 @@ public class PheromoneMap {
         matrix[b][a] = matrix[a][b];
     }
 
-    void updatePath(LinkedListNode node, double length){
+    void updatePath(LinkedListNode node, int length){
         LinkedListNode currentNode = node;
         LinkedListNode previousNode = currentNode.getPreview();
         LinkedListNode nextNode = currentNode.getNext();

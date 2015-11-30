@@ -9,6 +9,7 @@ public class LinkedListNode {
     private LinkedListNode next;
     private LinkedListNode preview;
     private int value;
+    private LinkedListNode link;
 
     public LinkedListNode(int value, LinkedListNode next){
         this.value = value;
@@ -84,4 +85,13 @@ public class LinkedListNode {
             preview = newNode;
 
     }
+
+    public void setLink(LinkedListNode node){
+        this.link = node;
+    }
+
+    public LinkedListNode getLink(){
+        return link;
+    }
+
 }

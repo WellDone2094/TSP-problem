@@ -16,10 +16,23 @@ public class Main {
             return;
         }
 
-        DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
+        DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates(), 30);
+//        int[][] candidateList = distanceMatrix.getCandidateList();
+//        for (int i = 0; i < candidateList.length; i++) {
+//            String s = "";
+//            for (int j = 0; j < candidateList[0].length; j++) {
+//                s += candidateList[i][j] + "\t";
+//            }
+//            System.out.println(s);
+//        }
 
-        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser);
-//        TSP_algorithm solver = new TSP_FarthestNearestInsertionHeuristic(fileParser.getDimension(), distanceMatrix, false);
+
+        TSP_algorithm nn = new TSP_NearestNeighborHeuristic(fileParser.getDimension(), distanceMatrix);
+        int[] nn_sol = nn.solve();
+        int sol_len = solutionSize(nn_sol, distanceMatrix);
+        System.out.println(sol_len);
+
+        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser, sol_len);
 
         int[] solution = solver.solve();
 
@@ -27,6 +40,14 @@ public class Main {
             System.out.println(solution[i]+1);
         }
 
+    }
+
+    public static int solutionSize(int[] solution, DistanceMatrix dm){
+        int len = 0;
+        for (int i = 0; i < solution.length; i++) {
+            len += dm.getDistance(solution[i], solution[(i+1)%solution.length]);
+        }
+        return len;
     }
 
     public static int[] generateArr(int len){
