@@ -4,54 +4,44 @@
 public class PheromoneMap {
 
     private double matrix[][];
-    private double initValue;
+    private double t0;
     private int nodes_number;
-    private double p;
     private double alpha;
 
-    public  PheromoneMap(int nodes_number, double initValue, double p, double alpha) {
+    public  PheromoneMap(int nodes_number, double t0, double alpha) {
 
         this.nodes_number = nodes_number;
-        this.initValue = initValue;
-        this.p = p;
+        this.t0 = t0;
         this.alpha = alpha;
         matrix = new double[nodes_number][nodes_number];
 
         for (int i = 0; i < this.nodes_number; i++){
             for (int j = 0; j < this.nodes_number; j++) {
-                matrix[i][j] = 1;
+                matrix[i][j] = t0;
             }
         }
     }
 
     public void updateConnection(int a, int b){
-        matrix[a][b] = (1-p)*matrix[a][b]+p;
+        matrix[a][b] = (1-alpha)*matrix[a][b];
         matrix[b][a] = matrix[a][b];
-    }
-
-    public void evaporation(){
-        for (int i = 0; i < nodes_number; i++) {
-            for (int j = 0; j < nodes_number; j++) {
-                matrix[i][j] = matrix[i][j]*(1-alpha)+alpha*0.1;
-            }
-        }
     }
 
     void updatePath(LinkedListNode node, double length){
         LinkedListNode currentNode = node;
+        LinkedListNode previousNode = currentNode.getPreview();
+        LinkedListNode nextNode = currentNode.getNext();
 
-        while(currentNode.getPreview() != null) {
+        do{
             int a = currentNode.getValue();
-            currentNode = currentNode.getPreview();
+            nextNode = currentNode.getNext(previousNode);
+            previousNode = currentNode;
+            currentNode = nextNode;
             int b = currentNode.getValue();
-            matrix[a][b] += alpha/length;
+            matrix[a][b] = matrix[a][b]*(1-alpha) + alpha/length;
             matrix[b][a] = matrix[a][b];
-        }
+        }while(currentNode != node);
 
-        int a = currentNode.getValue();
-        int b = node.getValue();
-        matrix[a][b] +=  (alpha / length)/initValue;
-        matrix[b][a] = matrix[a][b];
     }
 
     double getPheromone(int a, int b){

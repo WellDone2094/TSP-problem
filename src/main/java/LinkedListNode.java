@@ -55,8 +55,33 @@ public class LinkedListNode {
     }
 
     public LinkedListNode getPreview(LinkedListNode node){
+
         if(node == preview)
             return next;
         return preview;
+    }
+
+    public void setNextFrom(LinkedListNode prev, LinkedListNode newNext){
+        if(prev == next){
+            preview = newNext;
+            return;
+        }
+        next = newNext;
+    }
+
+    public void setPrevFrom(LinkedListNode next, LinkedListNode newPrev){
+        if(next == preview){
+            this.next = newPrev;
+            return;
+        }
+        preview = newPrev;
+    }
+
+    public void substitute(LinkedListNode node, LinkedListNode newNode){
+        if(next == node)
+            next = newNode;
+        if(preview == node)
+            preview = newNode;
+
     }
 }

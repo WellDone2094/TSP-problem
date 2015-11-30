@@ -18,6 +18,7 @@ public class Ant {
     private double currentLeght;
     private int initNode;
     private LinkedListNode currentPath;
+    private LinkedListNode firstNode;
     private LinkedListNode availableNodes;
 
     public Ant(int nodes_number, DistanceMatrix distanceMatrix, PheromoneMap pheromoneMap, double q0, double beta, int initNode){
@@ -29,6 +30,9 @@ public class Ant {
         this.currentLeght = 0;
         this.initNode = initNode;
         this.currentPath = new LinkedListNode(initNode, null);
+        this.firstNode = currentPath;
+        this.firstNode.setNext(firstNode);
+        this.firstNode.setPreview(firstNode);
         this.availableNodes = null;
         LinkedListNode lastNode = null;
         for(int i=nodes_number-1; i>=0; i--){
@@ -43,10 +47,13 @@ public class Ant {
         }
     }
 
+
+
     void chooseNextNode(Random random, boolean debug, int[] prob){
         double tot = 0;
         LinkedListNode best = null;
         LinkedListNode node = availableNodes;
+
         // sum all the value for each possible next edge
         while(node != null){
             double dist = distanceMatrix.getDistance(currentPath.getValue(), node.getValue());
@@ -58,7 +65,6 @@ public class Ant {
             }
             node = node.getNext();
         }
-
 
         // if < q0 choose best otherwise choose between others
         if(random.nextFloat() < q0){
@@ -77,11 +83,7 @@ public class Ant {
                 node = node.getNext();
             }
         }
-        if(debug) {
-//            System.out.println(node.getValue());
-            prob[node.getValue()]++;
-            return;
-        }
+
 
 
         //update pheromone
@@ -89,8 +91,9 @@ public class Ant {
 
         //add node to current path;
         currentLeght += distanceMatrix.getDistance(currentPath.getValue(), node.getValue());
-        currentPath.setNext(new LinkedListNode(node.getValue(), null, currentPath));
+        currentPath.setNext(new LinkedListNode(node.getValue(), firstNode, currentPath));
         currentPath = currentPath.getNext();
+        firstNode.setPreview(currentPath);
 
 
         // remove node from available
@@ -112,7 +115,7 @@ public class Ant {
     }
 
     public LinkedListNode getPath(){
-        return currentPath;
+        return firstNode;
     }
 
 }

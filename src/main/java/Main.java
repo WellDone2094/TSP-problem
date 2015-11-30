@@ -16,9 +16,6 @@ public class Main {
             return;
         }
 
-
-
-
         DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
 
         TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser);
@@ -46,5 +43,7 @@ public class Main {
         arr[i] = arr[j];
         arr[j] = supp;
     }
+
+
 
 }
