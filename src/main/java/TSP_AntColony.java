@@ -22,7 +22,7 @@ public class TSP_AntColony implements TSP_algorithm{
 
     private FileParser file;
 
-    int ants_number = 240;
+    int ants_number;
     double alpha = 0.1;                         // best path update
     double beta = 2;                            // pheromon power
     double q0 = 0.85;                            // follow pheromone
@@ -30,12 +30,13 @@ public class TSP_AntColony implements TSP_algorithm{
 
     boolean debug = true;
 
-    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file){
+    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file, int len_nn){
         this.nodes_number = nodes_number;
         this.distanceMatrix = distanceMatrix;
-        this.t0 = 1.0/(nodes_number*50000);
+        this.t0 = 1.0/(nodes_number*len_nn);
         this.pheromoneMap = new PheromoneMap(this.nodes_number, t0, alpha);
         this.seed = System.currentTimeMillis();
+        this.ants_number = (int)(nodes_number*0.6);
         this.random = new Random(seed);
         this.file = file;
     }

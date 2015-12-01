@@ -17,8 +17,14 @@ public class Main {
         }
 
         DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
+        TSP_algorithm nn = new TSP_NearestNeighborHeuristic(fileParser.getDimension(), distanceMatrix);
+        int[] sol = nn.solve();
+        int sol_size = 0;
+        for (int i = 0; i < sol.length; i++) {
+            sol_size += distanceMatrix.getDistance(sol[i],sol[(i+1)%sol.length]);
+        }
 
-        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser);
+        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser, sol_size);
 //        TSP_algorithm solver = new TSP_FarthestNearestInsertionHeuristic(fileParser.getDimension(), distanceMatrix, false);
 
         int[] solution = solver.solve();

@@ -52,6 +52,7 @@ public class Ant {
     void chooseNextNode(Random random, boolean debug, int[] prob){
         double tot = 0;
         LinkedListNode best = null;
+        double best_value = -1;
         LinkedListNode node = availableNodes;
 
         // sum all the value for each possible next edge
@@ -60,8 +61,9 @@ public class Ant {
             double pheromone = Math.pow(pheromoneMap.getPheromone(currentPath.getValue(), node.getValue()), beta);
             tot += pheromone/dist;
 
-            if(best == null || distanceMatrix.getDistance(currentPath.getValue(), best.getValue()) > dist){
+            if(best == null || best_value < pheromone/dist){
                 best = node;
+                best_value = pheromone/dist;
             }
             node = node.getNext();
         }
