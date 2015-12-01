@@ -68,12 +68,13 @@ public class TSP_AntColony implements TSP_algorithm{
             for (int i = 0; i < ants_number; i++) {
                 LinkedListNode path = ants.get(i).getPath();
                 twoOpt(path);
-                double len = calculateLength(path);
+                int len = calculateLength(path);
                 if(best_cost == -1 || best_cost > len) {
                     best_path = path;
                     best_cost = len;
                 }
             }
+
 
             if(absolute_best_cost == -1 || absolute_best_cost > best_cost){
                 absolute_best_cost = best_cost;
@@ -113,8 +114,8 @@ public class TSP_AntColony implements TSP_algorithm{
 
     }
 
-    public double calculateLength(LinkedListNode path){
-        double tot = 0;
+    public int calculateLength(LinkedListNode path){
+        int tot = 0;
         LinkedListNode currentNode = path;
         LinkedListNode previousNode = currentNode.getPreview();
         LinkedListNode nextNode = currentNode.getNext();

@@ -15,7 +15,7 @@ public class Ant {
     private int nodes_number;
     private double q0;
     private double beta;
-    private double currentLeght;
+    private int currentLeght;
     private int initNode;
     private LinkedListNode currentPath;
     private LinkedListNode firstNode;
@@ -112,7 +112,7 @@ public class Ant {
         }
     }
 
-    public double getCurrentLength(){
+    public int getCurrentLength(){
         return currentLeght+distanceMatrix.getDistance(initNode, currentPath.getValue());
     }
 
