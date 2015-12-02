@@ -62,11 +62,11 @@ public class TSP_AntColony implements TSP_algorithm{
         int max = 10000;
         LinkedListNode absolute_best_path = null;
         double absolute_best_cost = -1;
-        int[] costs = new int[ants_number];
-        LinkedListNode[] paths = new LinkedListNode[ants_number];
-        Thread[] threads = new Thread[8];
 
         for (int k = 0; k < max; k++) {
+            int[] costs = new int[ants_number];
+            LinkedListNode[] paths = new LinkedListNode[ants_number];
+            Thread[] threads = new Thread[8];
 
 
             // generate ants
@@ -86,13 +86,12 @@ public class TSP_AntColony implements TSP_algorithm{
                 paths[i] = ants.get(i).getPath();
             }
 
-            for (int i = 0; i < 1; i++) {
-//                threads[i] = new Thread(new TwoOptThread(paths, i*ants_number/8, (i+1)*ants_number/8, distanceMatrix, costs));
-                threads[i] = new Thread(new TwoOptThread(paths, 0, ants_number, distanceMatrix, costs));
+            for (int i = 0; i < 8; i++) {
+                threads[i] = new Thread(new TwoOptThread(paths, i*ants_number/8, (i+1)*ants_number/8, distanceMatrix, costs));
                 threads[i].start();
             }
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 8; i++) {
                 try {
                     threads[i].join();
                 }catch (Exception e){
@@ -110,14 +109,6 @@ public class TSP_AntColony implements TSP_algorithm{
                 }
 
 
-//                LinkedListNode path = ants.get(i).getPath();
-//                twoOpt(path);
-//                twoHOpt(path);
-//                int len = calculateLength(path);
-//                if(best_cost == -1 || best_cost > len) {
-//                    best_path = path;
-//                    best_cost = len;
-//                }
             }
 
 //            threeOpt(best_path);
@@ -138,9 +129,9 @@ public class TSP_AntColony implements TSP_algorithm{
 
             pheromoneMap.updatePath(absolute_best_path, absolute_best_cost);
 
-//            if(k%10==0){
-//                ants_number+=2;
-//            }
+            if(k%10==0){
+                ants_number+=8;
+            }
 
             if(debug && k%1000 == 0) {
                 System.out.println(k+" - "+absolute_best_cost+" - "+((absolute_best_cost-file.getBestKnow())/file.getBestKnow()));
