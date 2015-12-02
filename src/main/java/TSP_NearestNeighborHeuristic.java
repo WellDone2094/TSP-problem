@@ -6,18 +6,19 @@ import java.util.Random;
 public class TSP_NearestNeighborHeuristic implements TSP_algorithm{
     private DistanceMatrix dm;
     private int number_nodes;
+    private Random random;
 
-    public TSP_NearestNeighborHeuristic(int number_nodes, DistanceMatrix distanceMatrix){
+    public TSP_NearestNeighborHeuristic(int number_nodes, DistanceMatrix distanceMatrix, Random random){
         this.number_nodes = number_nodes;
         this.dm = distanceMatrix;
+        this.random = random;
     }
 
 
     @Override
     public int[] solve() {
         int[] arr = Main.generateArr(number_nodes);
-        Random rand = new Random();
-        int n = rand.nextInt(arr.length);
+        int n = random.nextInt(arr.length);
         Main.switchElement(arr, 0, n);
         for(int i=0; i< arr.length-1; i++){
             int min = i+1;

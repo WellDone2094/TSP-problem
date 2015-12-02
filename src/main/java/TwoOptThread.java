@@ -2,14 +2,14 @@
  * Created by WellDone2044 on 02/12/15.
  */
 public class TwoOptThread implements Runnable {
-    private LinkedListNode[] paths;
+    private Ant[] ants;
     private int start;
     private int end;
     private int[] results;
     private DistanceMatrix distanceMatrix;
 
-    public TwoOptThread(LinkedListNode[] paths, int start, int end, DistanceMatrix distanceMatrix, int[] results) {
-        this.paths = paths;
+    public TwoOptThread(Ant[] ants, int start, int end, DistanceMatrix distanceMatrix, int[] results) {
+        this.ants = ants;
         this.start = start;
         this.end = end;
         this.distanceMatrix = distanceMatrix;
@@ -19,19 +19,19 @@ public class TwoOptThread implements Runnable {
     @Override
     public void run() {
         for (int i = start; i < end; i++) {
-            twoOpt(paths[i]);
-            twoHOpt(paths[i]);
-            results[i] = calculateLength(paths[i]);
+            int len = twoOpt(ants[i].getPath(), distanceMatrix, ants[i].getCurrentLength());
+            len  = twoHOpt(ants[i].getPath(), distanceMatrix, len);
+//            results[i] = calculateLength(ants[i], distanceMatrix);
+            results[i] = len;
         }
     }
 
 
-    public void twoOpt(LinkedListNode first) {
+    public static int twoOpt(LinkedListNode first, DistanceMatrix distanceMatrix, int len) {
         double gain = 1;
         double bestGain = 1;
 
         while (bestGain != 0) {
-            gain = 0;
             bestGain = 0;
             LinkedListNode n1, n1prev, n2, n2prev, tmp;
             LinkedListNode bn1 = null, bn1prev = null, bn2 = null, bn2prev = null;
@@ -72,11 +72,14 @@ public class TwoOptThread implements Runnable {
                 bn2.getNext(bn2prev).substitute(bn2, bn1.getNext(bn1prev));
                 bn1.setNextFrom(bn1prev, bn2);
                 bn2.setPrevFrom(bn2prev, bn1);
+                len -= bestGain;
             }
         }
+
+        return len;
     }
 
-    public void twoHOpt(LinkedListNode first) {
+    public static int twoHOpt(LinkedListNode first, DistanceMatrix distanceMatrix, int len) {
         double gain = 1;
         double bestGain = 1;
 
@@ -129,12 +132,15 @@ public class TwoOptThread implements Runnable {
                 bn1next.substitute(bn1, bn2);
                 bn2.setPreview(bn1);
                 bn2.setNext(bn1next);
+
+                len -= bestGain;
             }
         }
+        return len;
     }
 
 
-    public int calculateLength(LinkedListNode path){
+    public static int calculateLength(LinkedListNode path, DistanceMatrix distanceMatrix){
         int tot = 0;
         LinkedListNode currentNode = path;
         LinkedListNode previousNode = currentNode.getPreview();
@@ -151,7 +157,6 @@ public class TwoOptThread implements Runnable {
 
         int a = currentNode.getValue();
         nextNode = currentNode.getNext(previousNode);
-        previousNode = currentNode.getPreview(nextNode);
         currentNode = nextNode;
         int b = currentNode.getValue();
         tot += distanceMatrix.getDistance(a, b);

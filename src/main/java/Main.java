@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Random;
 
 /**
  * Created by WellDone2044 on 17/09/15.
@@ -16,16 +17,10 @@ public class Main {
             return;
         }
 
+        Random random = new Random(System.currentTimeMillis());
         DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
-        TSP_algorithm nn = new TSP_NearestNeighborHeuristic(fileParser.getDimension(), distanceMatrix);
-        int[] sol = nn.solve();
-        int sol_size = 0;
-        for (int i = 0; i < sol.length; i++) {
-            sol_size += distanceMatrix.getDistance(sol[i],sol[(i+1)%sol.length]);
-        }
 
-
-        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser, sol_size, sol);
+        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser);
 
         int[] solution = solver.solve();
 
