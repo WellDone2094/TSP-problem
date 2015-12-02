@@ -36,7 +36,7 @@ public class TSP_AntColony implements TSP_algorithm{
         this.t0 = 1.0/(nodes_number*len_nn);
         this.pheromoneMap = new PheromoneMap(this.nodes_number, t0, alpha);
         this.seed = System.currentTimeMillis();
-        this.ants_number = (int)(20);           // 24 best
+        this.ants_number = (int)(24);           // 24 best
         this.random = new Random(seed);
         this.file = file;
 
@@ -62,7 +62,9 @@ public class TSP_AntColony implements TSP_algorithm{
         int max = 10000;
         LinkedListNode absolute_best_path = null;
         double absolute_best_cost = -1;
-
+        int[] costs = new int[ants_number];
+        LinkedListNode[] paths = new LinkedListNode[ants_number];
+        Thread[] threads = new Thread[8];
 
         for (int k = 0; k < max; k++) {
 
@@ -80,18 +82,42 @@ public class TSP_AntColony implements TSP_algorithm{
                 }
             }
 
+            for (int i = 0; i < ants_number; i++) {
+                paths[i] = ants.get(i).getPath();
+            }
+
+            for (int i = 0; i < 1; i++) {
+//                threads[i] = new Thread(new TwoOptThread(paths, i*ants_number/8, (i+1)*ants_number/8, distanceMatrix, costs));
+                threads[i] = new Thread(new TwoOptThread(paths, 0, ants_number, distanceMatrix, costs));
+                threads[i].start();
+            }
+
+            for (int i = 0; i < 1; i++) {
+                try {
+                    threads[i].join();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
             //choose best ant
             LinkedListNode best_path = null;
             double best_cost = -1;
             for (int i = 0; i < ants_number; i++) {
-                LinkedListNode path = ants.get(i).getPath();
-                twoOpt(path);
-                twoHOpt(path);
-                int len = calculateLength(path);
-                if(best_cost == -1 || best_cost > len) {
-                    best_path = path;
-                    best_cost = len;
+                if(best_cost == -1 || best_cost > costs[i]){
+                    best_cost = costs[i];
+                    best_path = paths[i];
                 }
+
+
+//                LinkedListNode path = ants.get(i).getPath();
+//                twoOpt(path);
+//                twoHOpt(path);
+//                int len = calculateLength(path);
+//                if(best_cost == -1 || best_cost > len) {
+//                    best_path = path;
+//                    best_cost = len;
+//                }
             }
 
 //            threeOpt(best_path);
@@ -112,9 +138,9 @@ public class TSP_AntColony implements TSP_algorithm{
 
             pheromoneMap.updatePath(absolute_best_path, absolute_best_cost);
 
-            if(k%10==0){
-                ants_number+=2;
-            }
+//            if(k%10==0){
+//                ants_number+=2;
+//            }
 
             if(debug && k%1000 == 0) {
                 System.out.println(k+" - "+absolute_best_cost+" - "+((absolute_best_cost-file.getBestKnow())/file.getBestKnow()));
