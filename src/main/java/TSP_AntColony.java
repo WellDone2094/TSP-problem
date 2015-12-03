@@ -27,14 +27,15 @@ public class TSP_AntColony implements TSP_algorithm {
     double alpha = 0.1;                         // best path update
     double beta = 2;                            // pheromon power
     double q0 = 0.8;                            // follow pheromone  0.78 best
+    double q1 = 0.75;
+    double q2 = 0.65;
 
 
-
-    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file) {
+    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file, long seed) {
 
         this.startTime = System.currentTimeMillis();
-        this.seed = 1449094772492L;//System.currentTimeMillis();
-        this.random = new Random(seed);
+        this.seed = System.currentTimeMillis();
+        this.random = new Random(this.seed);
         this.distanceMatrix = distanceMatrix;
 
         TSP_NearestNeighborHeuristic nn = new TSP_NearestNeighborHeuristic(nodes_number, distanceMatrix, this.random);
@@ -63,7 +64,6 @@ public class TSP_AntColony implements TSP_algorithm {
         len = TwoOptThread.twoOpt(first, distanceMatrix, len);
         len = TwoOptThread.twoHOpt(first, distanceMatrix, len);
         pheromoneMap.updatePath(first, len);
-        System.out.println("end constructor");
 
     }
 
@@ -73,7 +73,7 @@ public class TSP_AntColony implements TSP_algorithm {
         double absolute_best_cost = -1;
         int iteration = 0;
 
-        while ((System.currentTimeMillis() - startTime) < 3.9 * 60 * 1000) {
+        while ((System.currentTimeMillis() - startTime) < 2.9 * 60 * 1000) {
             int[] costs = new int[ants_number];
             LinkedListNode[] paths = new LinkedListNode[ants_number];
             Thread[] threads = new Thread[8];
@@ -125,17 +125,15 @@ public class TSP_AntColony implements TSP_algorithm {
                 absolute_best_cost = best_cost;
                 absolute_best_path = best_path;
                 double err = (absolute_best_cost-file.getBestKnow())/file.getBestKnow();
-                System.out.println(iteration + " - " + absolute_best_cost + " - " + err);
                 if(err<0.01){
-                    q0 = 0.75;
+                    q0 = q1;
                 }
                 if(err<0.006){
-                    q0 = 0.65;
+                    q0 = q2;
                 }
             }
 
             if (absolute_best_cost == file.getBestKnow()) {
-                System.out.println("Seed: " + seed);
                 break;
             }
 
@@ -144,6 +142,10 @@ public class TSP_AntColony implements TSP_algorithm {
             iteration++;
 
         }
+
+        double err = (absolute_best_cost-file.getBestKnow())/file.getBestKnow();
+        System.out.println(err);
+        System.out.println(seed);
 
 
         int[] sol = new int[nodes_number];

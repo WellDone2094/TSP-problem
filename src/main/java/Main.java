@@ -17,16 +17,18 @@ public class Main {
             return;
         }
 
+        long seed = Long.parseLong(args[1]);
+
         Random random = new Random(System.currentTimeMillis());
         DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
 
-        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser);
+        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser, seed);
 
         int[] solution = solver.solve();
 
-        for(int i=0; i<solution.length; i++) {
-            System.out.println(solution[i]+1);
-        }
+//        for(int i=0; i<solution.length; i++) {
+//            System.out.println(solution[i]+1);
+//        }
 
     }
 
