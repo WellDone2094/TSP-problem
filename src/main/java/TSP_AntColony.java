@@ -26,15 +26,14 @@ public class TSP_AntColony implements TSP_algorithm {
     int ants_number;
     double alpha = 0.1;                         // best path update
     double beta = 2;                            // pheromon power
-    double q0 = 0.68;                            // follow pheromone  0.78 best
+    double q0 = 0.8;                            // follow pheromone  0.78 best
 
 
-    boolean debug = true;
 
     public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file) {
 
         this.startTime = System.currentTimeMillis();
-        this.seed = System.currentTimeMillis();
+        this.seed = 1449094772492L;//System.currentTimeMillis();
         this.random = new Random(seed);
         this.distanceMatrix = distanceMatrix;
 
@@ -48,7 +47,7 @@ public class TSP_AntColony implements TSP_algorithm {
         this.nodes_number = nodes_number;
         this.t0 = 1.0 / (nodes_number * len);
         this.pheromoneMap = new PheromoneMap(this.nodes_number, t0, alpha);
-        this.ants_number = (int) (32);           // 24 best
+        this.ants_number = (int) (24);           // 24 best
         this.file = file;
 
         LinkedListNode first = new LinkedListNode(init_solution[0], null, null);
@@ -74,7 +73,7 @@ public class TSP_AntColony implements TSP_algorithm {
         double absolute_best_cost = -1;
         int iteration = 0;
 
-        while ((System.currentTimeMillis() - startTime) < 2.9 * 60 * 1000) {
+        while ((System.currentTimeMillis() - startTime) < 3.9 * 60 * 1000) {
             int[] costs = new int[ants_number];
             LinkedListNode[] paths = new LinkedListNode[ants_number];
             Thread[] threads = new Thread[8];
@@ -127,12 +126,12 @@ public class TSP_AntColony implements TSP_algorithm {
                 absolute_best_path = best_path;
                 double err = (absolute_best_cost-file.getBestKnow())/file.getBestKnow();
                 System.out.println(iteration + " - " + absolute_best_cost + " - " + err);
-//                if(err<0.01){
-//                    q0 = 0.72;
-//                }
-//                if(err<0.006){
-//                    q0 = 0.62;
-//                }
+                if(err<0.01){
+                    q0 = 0.75;
+                }
+                if(err<0.006){
+                    q0 = 0.65;
+                }
             }
 
             if (absolute_best_cost == file.getBestKnow()) {
