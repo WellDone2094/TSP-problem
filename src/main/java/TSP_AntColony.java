@@ -26,9 +26,9 @@ public class TSP_AntColony implements TSP_algorithm {
     int ants_number;
     double alpha = 0.1;                         // best path update
     double beta = 2;                            // pheromon power
-    double q0 = 0.8;                            // follow pheromone  0.78 best
-    double q1 = 0.75;
-    double q2 = 0.65;
+    double q0 = 0.78;                            // follow pheromone  0.78 best
+    double q1 = 0.78;
+    double q2 = 0.70;
 
 
     public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file, long seed) {
