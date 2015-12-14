@@ -18,17 +18,22 @@ public class Main {
         }
 
         long seed = Long.parseLong(args[1]);
+        double q0 = Double.parseDouble(args[2]);
+        double q1 = Double.parseDouble(args[3]);
+        double q2 = Double.parseDouble(args[4]);
+        int thread_num = Integer.parseInt(args[5]);
 
         Random random = new Random(System.currentTimeMillis());
         DistanceMatrix distanceMatrix = new DistanceMatrix(fileParser.getCoordinates());
 
-        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser, seed);
+        TSP_algorithm solver = new TSP_AntColony(fileParser.getDimension(), distanceMatrix, fileParser, seed, q0, q1, q2, thread_num);
 
         int[] solution = solver.solve();
 
-//        for(int i=0; i<solution.length; i++) {
-//            System.out.println(solution[i]+1);
-//        }
+        System.out.println("Tour:");
+        for(int i=0; i<solution.length; i++) {
+            System.out.print(solution[i] + 1 + " ");
+        }
 
     }
 

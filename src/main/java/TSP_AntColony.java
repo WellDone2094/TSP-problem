@@ -1,10 +1,3 @@
-import org.w3c.dom.NodeList;
-import sun.awt.image.ImageWatched;
-import sun.jvm.hotspot.opto.Node_List;
-import sun.util.resources.cldr.ka.LocaleNames_ka;
-
-import javax.xml.soap.Node;
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -24,19 +17,24 @@ public class TSP_AntColony implements TSP_algorithm {
     private FileParser file;
 
     int ants_number;
+    int threads_num;
     double alpha = 0.1;                         // best path update
     double beta = 2;                            // pheromon power
-    double q0 = 0.78;                            // follow pheromone  0.78 best
-    double q1 = 0.78;
-    double q2 = 0.70;
+    double q0;                            // follow pheromone  0.78 best
+    double q1;
+    double q2;
 
 
-    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file, long seed) {
+    public TSP_AntColony(int nodes_number, DistanceMatrix distanceMatrix, FileParser file, long seed, double q0, double q1, double q2, int threads) {
 
         this.startTime = System.currentTimeMillis();
-        this.seed = System.currentTimeMillis();
+        this.seed = seed;
         this.random = new Random(this.seed);
         this.distanceMatrix = distanceMatrix;
+        this.q0 = q0;
+        this.q1 = q1;
+        this.q2 = q2;
+        this.threads_num = threads;
 
         TSP_NearestNeighborHeuristic nn = new TSP_NearestNeighborHeuristic(nodes_number, distanceMatrix, this.random);
         int[] init_solution = nn.solve();
@@ -76,7 +74,7 @@ public class TSP_AntColony implements TSP_algorithm {
         while ((System.currentTimeMillis() - startTime) < 2.9 * 60 * 1000) {
             int[] costs = new int[ants_number];
             LinkedListNode[] paths = new LinkedListNode[ants_number];
-            Thread[] threads = new Thread[8];
+            Thread[] threads = new Thread[this.threads_num];
 
 
             // generate ants
@@ -97,6 +95,9 @@ public class TSP_AntColony implements TSP_algorithm {
             }
 
             for (int i = 0; i < threads.length; i++) {
+                int end = (i+1)*ants_number/threads.length;
+                if (end > threads.length)
+                    end = threads.length;
                 threads[i] = new Thread(new TwoOptThread(ants, i * ants_number / threads.length, (i + 1) * ants_number / threads.length, distanceMatrix, costs));
                 threads[i].start();
             }
@@ -144,8 +145,8 @@ public class TSP_AntColony implements TSP_algorithm {
         }
 
         double err = (absolute_best_cost-file.getBestKnow())/file.getBestKnow();
-        System.out.println(err);
-        System.out.println(seed);
+        System.out.println("Error: "+err);
+        System.out.println("Tour length: "+absolute_best_cost);
 
 
         int[] sol = new int[nodes_number];
